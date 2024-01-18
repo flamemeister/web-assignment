@@ -1,11 +1,43 @@
 {
-  "name": "web-assignment",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC"
-}
+    "name": "books-api",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "lint": "eslint .",
+      "start": "nodemon app.js",
+      "test": "export ENV=Test && mocha tests/**/*Tests.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "body-parser": "^1.20.2",
+      "exceljs": "^4.4.0",
+      "express": "^4.18.2",
+      "mongoose": "^5.13.22",
+      "multer": "^1.4.5-lts.1",
+      "nodemon": "^1.18.11"
+    },
+    "devDependencies": {
+      "eslint": "^5.16.0",
+      "eslint-config-airbnb-base": "^13.1.0",
+      "eslint-plugin-import": "^2.17.2",
+      "mocha": "^6.1.4",
+      "should": "^13.2.3",
+      "sinon": "^7.3.2",
+      "supertest": "^4.0.2"
+    },
+    "nodemonConfig": {
+      "restartable": "rs",
+      "ignore": [
+        "node_modules/**/node_modules"
+      ],
+      "delay": "2500",
+      "env": {
+        "NODE_ENV": "development",
+        "PORT": 4000
+      }
+    }
+  }
+  
