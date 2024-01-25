@@ -1,45 +1,51 @@
 const express = require('express');
-const booksController = require('../controllers/booksController');
+const bookController = require('../controllers/bookController');
 const Author = require('../models/authorModel');
 const Genre = require('../models/genreModel');
 
 function routes(Book) {
   const bookRouter = express.Router();
-  const controller = booksController(Book);
+  const controller = bookController(Book);
 
   bookRouter.route('/books')
-    .get(controller.get)
-    .post(async (req, res) => {
-      try {
-        const { title, author, genre, publishYear, pagesCount, price } = req.body;
-        let authorObj = await Author.findOne({ name: author });
-        if (!authorObj) {
-          authorObj = new Author({ name: author });
-          await authorObj.save();
-        }
+  .get(controller.get)
+  .post(async (req, res) => {
+    try {
+      const { title, author, genre, publishYear, pagesCount, price } = req.body;
 
-        let genreObj = await Genre.findOne({ name: genre });
-        if (!genreObj) {
-          genreObj = new Genre({ name: genre });
-          await genreObj.save();
-        }
+      // Split author into name and surname
+      const [authorName, authorSurname] = author.split(' ');
 
-        const book = new Book({
-          title,
-          author: authorObj._id,
-          genre: genreObj._id,
-          publishYear,
-          pagesCount,
-          price,
-        });
+      // Find or create the author based on both name and surname
+      let authorObj = await Author.findOne({ name: authorName, surname: authorSurname });
 
-        await book.save();
-        res.status(201).json(book);
-      } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+      if (!authorObj) {
+        authorObj = new Author({ name: authorName, surname: authorSurname });
+        await authorObj.save();
       }
-    });
+
+      let genreObj = await Genre.findOne({ name: genre });
+      if (!genreObj) {
+        genreObj = new Genre({ name: genre });
+        await genreObj.save();
+      }
+
+      const book = new Book({
+        title,
+        author: authorObj._id,
+        genre: genreObj._id,
+        publishYear,
+        pagesCount,
+        price,
+      });
+
+      await book.save();
+      res.status(201).json(book);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
 
   bookRouter.use('/books/:bookId', async (req, res, next) => {
     try {

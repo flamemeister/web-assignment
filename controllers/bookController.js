@@ -1,4 +1,4 @@
-function booksController(Book) {
+function bookController(Book) {
     function post(req, res) {
       const book = new Book(req.body);
       if (!req.body.title) {
@@ -29,5 +29,5 @@ function booksController(Book) {
     return { post, get };
   }
   
-  module.exports = booksController;
+  module.exports = bookController;
   
